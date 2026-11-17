@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Insights · PlayPulse{% endblock %}
+{% block content %}
+<div class="container page-head">
+  <h1>Insights</h1>
+  <p class="muted mt-0">Live analysis of every booking on PlayPulse, built with <b>NumPy</b>, <b>pandas</b> and <b>Matplotlib</b>. Refresh to regenerate.</p>
+</div>
+
+<div class="container">
+{% if data %}
+  {% set s = data.summary %}
+  <div class="kpis">
+    <div class="kpi"><small>Bookings</small><b>{{ s.total_bookings }}</b></div>
+    <div class="kpi"><small>Revenue</small><b>{{ s.revenue|inr }}</b></div>
+    <div class="kpi"><small>Avg booking</small><b>{{ s.avg_ticket|inr }}</b></div>
+    <div class="kpi"><small>Avg rating</small><b>★ {{ s.avg_rating }}</b></div>
+    <div class="kpi"><small>Cancel rate</small><b>{{ s.cancel_rate }}%</b></div>
+    <div class="kpi"><small>Busiest hour</small><b>{{ s.busiest_hour|hour }}</b></div>
+  </div>
+
+  <!-- ?v=... stops the browser from showing an old cached image -->
+  {% set v = range(100000)|random %}
+  <div class="grid-2">
+    <div class="chart-card"><img src="{{ url_for('static', filename='charts/by_sport.png') }}?v={{ v }}" alt="Bookings by sport"></div>
+    <div class="chart-card"><img src="{{ url_for('static', filename='charts/by_hour.png') }}?v={{ v }}" alt="Bookings by hour"></div>
+    <div class="chart-card"><img src="{{ url_for('static', filename='charts/by_venue.png') }}?v={{ v }}" alt="Revenue by venue"></div>
+    <div class="chart-card"><img src="{{ url_for('static', filename='charts/games_skill.png') }}?v={{ v }}" alt="Games by skill"></div>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <h3>Weekday vs weekend <span class="muted small">(pandas groupby → count &amp; mean)</span></h3>
+    <table class="tbl">
+      <tr><th>Sport</th><th>Day type</th><th>Bookings</th><th>Average amount</th></tr>
+      {% for r in data.rows %}
+        <tr><td>{{ r.sport_name }}</td><td>{{ r.day_type }}</td><td>{{ r['count']|int }}</td><td>{{ r['mean']|inr }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+{% else %}
+  <div class="panel empty"><div class="big">📊</div><p>No bookings yet. Charts will appear after the first booking.</p></div>
+{% endif %}
+</div>
+{% endblock %}

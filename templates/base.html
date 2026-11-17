@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PlayPulse · Book courts. Find players.{% endblock %}</title>
+  <meta name="description" content="Book sports venues near you and join open games with players of your level.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- ===== Top bar ===== -->
+<header class="topbar">
+  <div class="container">
+    <a href="{{ url_for('home') }}" class="logo"><span class="pulse"></span><span>Play<b>Pulse</b></span></a>
+
+    <nav class="nav">
+      <a href="{{ url_for('venues_page') }}" class="{{ 'active' if request.endpoint in ('venues_page', 'venue_page', 'book_page') }}">Venues</a>
+      <a href="{{ url_for('games_page') }}" class="{{ 'active' if request.endpoint in ('games_page', 'game_page', 'host_game_page') }}">Find a Game</a>
+      <a href="{{ url_for('insights_page') }}" class="{{ 'active' if request.endpoint == 'insights_page' }}">Insights</a>
+      <a href="{{ url_for('developers_page') }}" class="{{ 'active' if request.endpoint == 'developers_page' }}">API</a>
+    </nav>
+
+    <div class="top-actions">
+      <!-- choosing an area changes the distances shown on venue cards -->
+      <form class="area-form" action="{{ url_for('set_area') }}" method="POST">
+        <span>📍</span>
+        <select name="area" aria-label="Your area">
+          {% for a in AREAS %}<option value="{{ a }}" {{ 'selected' if a == area }}>{{ a }}</option>{% endfor %}
+        </select>
+        <button type="submit">Set</button>
+      </form>
+
+      {% if user %}
+        <a href="{{ url_for('my_bookings_page') }}" class="link-btn">My bookings</a>
+        <form action="{{ url_for('api_logout') }}" method="POST">
+          <button class="link-btn" type="submit">Log out</button>
+        </form>
+        <a href="{{ url_for('my_bookings_page') }}" class="avatar" title="{{ user.name }}">{{ user.initials }}</a>
+      {% else %}
+        <a href="{{ url_for('login_page') }}" class="link-btn">Log in</a>
+        <a href="{{ url_for('signup_page') }}" class="btn btn-primary btn-sm">Sign up</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<!-- ===== Flash messages (success / error) ===== -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="container flashes">
+    {% for category, msg in messages %}<div class="flash {{ category }}">{{ msg }}</div>{% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="container">
+    <div class="cols">
+      <div>
+        <a href="{{ url_for('home') }}" class="logo" style="color:#fff"><span class="pulse"></span><span>Play<b>Pulse</b></span></a>
+        <p style="margin-top:10px">Book courts, turfs and pools near you, and find players at your level. A CP Lab Mini Project built with Python &amp; Flask.</p>
+      </div>
+      <div>
+        <h4>Play</h4>
+        <a href="{{ url_for('venues_page') }}">All venues</a>
+        <a href="{{ url_for('games_page') }}">Open games</a>
+        <a href="{{ url_for('host_game_page') }}">Host a game</a>
+      </div>
+      <div>
+        <h4>Sports</h4>
+        {% for key in ['badminton', 'football', 'cricket', 'tennis'] %}
+          <a href="{{ url_for('venues_page', sport=key) }}">{{ SPORTS[key][0] }}</a>
+        {% endfor %}
+      </div>
+      <div>
+        <h4>Project</h4>
+        <a href="{{ url_for('insights_page') }}">Insights</a>
+        <a href="{{ url_for('developers_page') }}">API docs</a>
+        <a href="{{ url_for('api_index') }}">/api (JSON)</a>
+      </div>
+    </div>
+    <div class="base">
+      <span>© {{ today_iso[:4] }} PlayPulse · Computer Programming Lab</span>
+      <span>Made with Python 🐍 + Flask</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

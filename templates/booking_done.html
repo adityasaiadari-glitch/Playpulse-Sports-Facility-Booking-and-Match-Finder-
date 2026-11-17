@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Booking {{ b.id }} · PlayPulse{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="ticket">
+    <div class="top art-{{ b.sport }}" style="background-image:radial-gradient(rgba(255,255,255,.16) 1.5px,transparent 1.6px),var(--grad);background-size:16px 16px,cover">
+      <span class="chip" style="background:rgba(255,255,255,.2);color:#fff">
+        {{ '✅ Confirmed' if b.status == 'confirmed' else '✖ Cancelled' }}
+      </span>
+      <h1>{{ SPORTS[b.sport][1] }} {{ SPORTS[b.sport][0] }} at {{ venue.name }}</h1>
+      <div style="opacity:.9">{{ venue.address }}</div>
+    </div>
+    <div class="bottom">
+      <div><small>Booking ID</small><b>{{ b.id }}</b></div>
+      <div><small>Date</small><b>{{ b.date|pdate }}</b></div>
+      <div><small>Time</small><b>{{ slots.range_label(b.hour, b.duration) }}</b></div>
+      <div><small>Duration</small><b>{{ b.duration }} hour{{ 's' if b.duration > 1 }}</b></div>
+      <div><small>Amount</small><b>{{ b.amount|inr }}</b></div>
+      <div><small>Pay at venue</small><b>Cash / UPI</b></div>
+    </div>
+    <div class="perf"></div>
+    <div class="acts" style="padding-top:22px">
+      <a class="btn btn-primary" href="{{ url_for('my_bookings_page') }}">My bookings</a>
+      <a class="btn btn-ghost" href="{{ url_for('games_page', sport=b.sport, date=b.date) }}">Find players for this day</a>
+      <a class="btn btn-ghost" target="_blank" rel="noopener"
+         href="https://wa.me/?text={{ ('Booked! ' ~ SPORTS[b.sport][0] ~ ' at ' ~ venue.name ~ ' on ' ~ (b.date|pdate) ~ ', ' ~ slots.range_label(b.hour, b.duration))|urlencode }}">Share on WhatsApp</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

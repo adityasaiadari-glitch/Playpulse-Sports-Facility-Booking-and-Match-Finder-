@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Demo Player",
+    "email": "demo@playpulse.in",
+    "phone": "9876543210",
+    "skill": "Intermediate",
+    "favourite_sport": "badminton",
+    "password_hash": "scrypt:32768:8:1$3R7ZQmExltRWgXgY$8d6c5edd86cb81667e0824347acd70ea938a353dcfc441c2e896ed4f7d6974b901331eeba25b83ad2f015fb26d72f0fce011797265d4b50c602b75d641fa7b73",
+    "joined": "2026-10-24"
+  },
+  {
+    "name": "Riya Sharma",
+    "email": "riya@playpulse.in",
+    "phone": "9811122233",
+    "skill": "Advanced",
+    "favourite_sport": "badminton",
+    "password_hash": "scrypt:32768:8:1$6ydie8t3izYetD3J$af15259fb0ffffba4bc8d13975111ea07d6e1305e713b8a1d62783aedbdd75acfbc21ccd31c4da6641adc9d1adb9c1640a1dcaf07e7e53dee10bd03f733b9dca",
+    "joined": "2026-11-04"
+  },
+  {
+    "name": "Arjun Mehta",
+    "email": "arjun@playpulse.in",
+    "phone": "9822233344",
+    "skill": "Intermediate",
+    "favourite_sport": "football",
+    "password_hash": "scrypt:32768:8:1$REyLo7fMXa6P8YRV$6c9dd65bd78cd10d0f7bd8a3d7ec752030a7dbd2907dac49612f2f68770134d90a0cc438d6c2ddc360f9be8a419154e35c401b7d12e180307d614d7acf153ca2",
+    "joined": "2026-10-03"
+  },
+  {
+    "name": "Kabir Singh",
+    "email": "kabir@playpulse.in",
+    "phone": "9833344455",
+    "skill": "Beginner",
+    "favourite_sport": "cricket",
+    "password_hash": "scrypt:32768:8:1$EOUsT0HL3wKCDCWz$79a018cd91e032b222e2f211e4dcac6f21a86c58c5c8a43c60fdca615d7b519ae388eb5733aa8da8fded0535efd1975247c1a716374e67b92ee0d0e01bb9c330",
+    "joined": "2026-10-07"
+  },
+  {
+    "name": "Neha Gupta",
+    "email": "neha@playpulse.in",
+    "phone": "9844455566",
+    "skill": "Intermediate",
+    "favourite_sport": "tennis",
+    "password_hash": "scrypt:32768:8:1$7LjI3z9E4hFOZFtZ$9620712576fb0d27f1b19581d4e49f76c2ade59b627b70dcfc78c855a04408779e17cb9040e0b81afdb73e8bf211e4305cca2b0dbf772d3540849c701e2c0409",
+    "joined": "2026-10-10"
+  },
+  {
+    "name": "Ishaan Rao",
+    "email": "ishaan@playpulse.in",
+    "phone": "9855566677",
+    "skill": "Advanced",
+    "favourite_sport": "basketball",
+    "password_hash": "scrypt:32768:8:1$EZv74cfF9Pt9up1H$55459a68e03d71b0cdf2c45498dba7bb80dce033f4b060bbd8e37556b1f94b985efefa694b96f3416c3cfbe9e6f201b2f333c3fc3ed4407c4ded5337a941c1d1",
+    "joined": "2026-10-21"
+  },
+  {
+    "name": "Sai Aditya Adari",
+    "email": "adityasaiadari@gmail.com",
+    "phone": "6300499121",
+    "skill": "Intermediate",
+    "favourite_sport": "badminton",
+    "password_hash": "scrypt:32768:8:1$dMtCxeCElBTC3UFR$8cd3b5fb84e4d84f838b04bb211e04d81e4fe9a54e9dbb20c4d3af0e2bc3512e440e6819e2a9a68630e10e94db6b45c7208d7f6f8018f4b39278f007b6695b3d",
+    "joined": "2026-11-17"
+  }
+]

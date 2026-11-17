@@ -1,0 +1,146 @@
+[
+  {
+    "id": "G0001",
+    "host_email": "riya@playpulse.in",
+    "sport": "badminton",
+    "venue_id": 1,
+    "date": "2026-11-18",
+    "hour": 19,
+    "skill": "Advanced",
+    "total_spots": 4,
+    "cost_per_head": 112,
+    "notes": "Doubles, bring your own racket. Feathers provided.",
+    "players": [
+      {
+        "email": "riya@playpulse.in",
+        "name": "Riya Sharma"
+      },
+      {
+        "email": "ishaan@playpulse.in",
+        "name": "Ishaan Rao"
+      }
+    ],
+    "booking_id": "PP00188",
+    "status": "open"
+  },
+  {
+    "id": "G0002",
+    "host_email": "arjun@playpulse.in",
+    "sport": "football",
+    "venue_id": 2,
+    "date": "2026-11-18",
+    "hour": 20,
+    "skill": "Intermediate",
+    "total_spots": 10,
+    "cost_per_head": 180,
+    "notes": "5-a-side friendly. Wear studs/turf shoes.",
+    "players": [
+      {
+        "email": "arjun@playpulse.in",
+        "name": "Arjun Mehta"
+      },
+      {
+        "email": "riya@playpulse.in",
+        "name": "Riya Sharma"
+      }
+    ],
+    "booking_id": "PP00189",
+    "status": "open"
+  },
+  {
+    "id": "G0003",
+    "host_email": "kabir@playpulse.in",
+    "sport": "cricket",
+    "venue_id": 2,
+    "date": "2026-11-19",
+    "hour": 18,
+    "skill": "Beginner",
+    "total_spots": 8,
+    "cost_per_head": 188,
+    "notes": "Tennis-ball box cricket, everyone bats & bowls.",
+    "players": [
+      {
+        "email": "kabir@playpulse.in",
+        "name": "Kabir Singh"
+      },
+      {
+        "email": "riya@playpulse.in",
+        "name": "Riya Sharma"
+      }
+    ],
+    "booking_id": "PP00190",
+    "status": "open"
+  },
+  {
+    "id": "G0004",
+    "host_email": "neha@playpulse.in",
+    "sport": "tennis",
+    "venue_id": 3,
+    "date": "2026-11-19",
+    "hour": 7,
+    "skill": "Intermediate",
+    "total_spots": 2,
+    "cost_per_head": 350,
+    "notes": "Morning singles rally, 1 hour.",
+    "players": [
+      {
+        "email": "neha@playpulse.in",
+        "name": "Neha Gupta"
+      }
+    ],
+    "booking_id": "PP00191",
+    "status": "open"
+  },
+  {
+    "id": "G0005",
+    "host_email": "ishaan@playpulse.in",
+    "sport": "basketball",
+    "venue_id": 4,
+    "date": "2026-11-20",
+    "hour": 19,
+    "skill": "Advanced",
+    "total_spots": 6,
+    "cost_per_head": 133,
+    "notes": "3v3 half court, competitive.",
+    "players": [
+      {
+        "email": "ishaan@playpulse.in",
+        "name": "Ishaan Rao"
+      },
+      {
+        "email": "kabir@playpulse.in",
+        "name": "Kabir Singh"
+      }
+    ],
+    "booking_id": "PP00192",
+    "status": "open"
+  },
+  {
+    "id": "G0006",
+    "host_email": "riya@playpulse.in",
+    "sport": "pickleball",
+    "venue_id": 1,
+    "date": "2026-11-20",
+    "hour": 18,
+    "skill": "Beginner",
+    "total_spots": 4,
+    "cost_per_head": 150,
+    "notes": "New to pickleball? Come learn, paddles available.",
+    "players": [
+      {
+        "email": "riya@playpulse.in",
+        "name": "Riya Sharma"
+      },
+      {
+        "email": "arjun@playpulse.in",
+        "name": "Arjun Mehta"
+      },
+      {
+        "email": "adityasaiadari@gmail.com",
+        "name": "Sai Aditya Adari"
+      }
+    ],
+    "booking_id": "PP00193",
+    "status": "open"
+  }
+]

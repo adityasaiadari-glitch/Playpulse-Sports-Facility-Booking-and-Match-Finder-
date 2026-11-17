@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ SPORTS[g.sport][0] }} game · PlayPulse{% endblock %}
+{% block content %}
+<section class="venue-hero art-{{ g.sport }}">
+  <div class="container">
+    <div class="crumbs"><a href="{{ url_for('games_page') }}">Games</a> › {{ SPORTS[g.sport][0] }} › {{ g.id }}</div>
+    <h1>{{ SPORTS[g.sport][0] }} · {{ g.skill }}</h1>
+    <div class="hero-meta">
+      <span class="chip">📅 {{ g.date|pdate }}</span>
+      <span class="chip">⏰ {{ slots.range_label(g.hour) }}</span>
+      <a class="chip" href="{{ url_for('venue_page', venue_id=venue.id) }}">📍 {{ venue.name }}</a>
+      {% if g.status == 'cancelled' %}<span class="chip" style="background:#fff;color:var(--bad)">Cancelled</span>{% endif %}
+    </div>
+  </div>
+  <div class="big-emoji">{{ SPORTS[g.sport][1] }}</div>
+</section>
+
+<div class="container detail-layout">
+  <div>
+    <div class="panel">
+      <h3>Players ({{ g.players|length }}/{{ g.total_spots }})</h3>
+      <div class="bar" style="margin:10px 0 16px"><i style="width: {{ (100 * g.players|length / g.total_spots)|round|int }}%"></i></div>
+      <div class="players">
+        {% for p in g.players %}
+          <div class="player"><span class="who">{{ p.name.split()|map('first')|join('')|upper }}</span>{{ p.name }}{% if loop.first %} <span class="chip coral" style="padding:2px 8px;font-size:.7rem">HOST</span>{% endif %}</div>
+        {% endfor %}
+        {% for i in range(g.spots_left) %}
+          <div class="player empty-spot"><span class="who">?</span>Open spot</div>
+        {% endfor %}
+      </div>
+    </div>
+    {% if g.notes %}
+    <div class="panel"><h3>Note from the host</h3><p class="mt-0">“{{ g.notes }}”</p></div>
+    {% endif %}
+    <div class="panel">
+      <h3>Game rules</h3>
+      <ul class="muted" style="margin:0;padding-left:18px">
+        <li>Split the court cost: {{ g.cost_per_head|inr }} per player, paid at the venue.</li>
+        <li>Arrive 10 minutes early to warm up.</li>
+        <li>Can't make it? Leave the game so someone else can take your spot.</li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="side-sticky">
+    <div class="panel summary-card">
+      <h3>{{ g.spots_left }} spot{{ 's' if g.spots_left != 1 }} left</h3>
+      <div class="line"><span>Level</span><b>{{ g.skill }}</b></div>
+      <div class="line"><span>Cost</span><b>{{ g.cost_per_head|inr }} / player</b></div>
+      <div class="line"><span>Venue</span><b>{{ venue.name }}</b></div>
+      <div class="line"><span>Distance</span><b>{{ venue.distance_km }} km</b></div>
+      <div style="margin-top:14px">
+        {% if g.status != 'open' %}
+          <button class="btn btn-ghost btn-block" disabled>Game cancelled</button>
+        {% elif is_host %}
+          <a class="btn btn-ghost btn-block" href="{{ url_for('my_bookings_page') }}">You're the host · manage booking</a>
+        {% elif joined %}
+          <form action="{{ url_for('api_leave', game_id=g.id) }}" method="POST">
+            <button class="btn btn-ghost btn-block" type="submit">Leave game</button>
+          </form>
+        {% elif g.is_full() %}
+          <button class="btn btn-ghost btn-block" disabled>Game is full</button>
+        {% else %}
+          <form action="{{ url_for('api_join', game_id=g.id) }}" method="POST">
+            <button class="btn btn-primary btn-block" type="submit">Join this game</button>
+          </form>
+        {% endif %}
+      </div>
+      <a class="btn btn-ghost btn-block btn-sm" style="margin-top:8px" target="_blank" rel="noopener"
+         href="https://wa.me/?text={{ ('Join my ' ~ SPORTS[g.sport][0] ~ ' game on PlayPulse: ' ~ url_for('game_page', game_id=g.id, _external=True))|urlencode }}">Invite on WhatsApp</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

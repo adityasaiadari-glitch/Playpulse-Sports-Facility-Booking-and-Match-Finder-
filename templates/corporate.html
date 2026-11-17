@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Group booking · {{ venue.name }}{% endblock %}
+{% block content %}
+<div class="container page-head">
+  <a class="small muted" href="{{ url_for('venue_page', venue_id=venue.id) }}">← Back to {{ venue.name }}</a>
+  <h1 style="margin-top:8px">Group &amp; corporate booking</h1>
+  <p class="muted mt-0">Tournaments, office leagues, college fests: tell us what you need and {{ venue.name }} will get back within 24 hours.</p>
+</div>
+<div class="container detail-layout" style="padding-top:6px">
+  <!-- POST /api/enquiries : saved as a new row in data/enquiries.csv -->
+  <form class="panel" action="{{ url_for('api_enquiry') }}" method="POST">
+    <input type="hidden" name="venue_id" value="{{ venue.id }}">
+    <div class="row-2">
+      <div class="field"><label for="company">Company / group name</label>
+        <input type="text" id="company" name="company" required minlength="2" placeholder="Acme Corp"></div>
+      <div class="field"><label for="contact_name">Your name</label>
+        <input type="text" id="contact_name" name="contact_name" required pattern="{{ patterns.name }}" title="Letters and spaces only"
+               value="{{ user.name if user }}"></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label for="email">Work email</label>
+        <input type="email" id="email" name="email" required value="{{ user.email if user }}"></div>
+      <div class="field"><label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" required pattern="{{ patterns.phone }}" maxlength="10" title="10-digit mobile number"
+               value="{{ user.phone if user }}"></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label for="sport">Sport</label>
+        <select id="sport" name="sport">
+          {% for key, name, icon in venue.sport_list() %}<option value="{{ key }}">{{ icon }} {{ name }}</option>{% endfor %}
+        </select></div>
+      <div class="field"><label for="people">Number of people</label>
+        <input type="number" id="people" name="people" min="10" max="500" value="20" required></div>
+    </div>
+    <div class="field"><label for="message">Details</label>
+      <textarea id="message" name="message" rows="4" maxlength="500" placeholder="Preferred dates, format, equipment needed…"></textarea></div>
+    <button class="btn btn-primary" type="submit">Send enquiry</button>
+  </form>
+  <aside class="side-sticky">
+    <div class="panel"><h3>Why book as a group?</h3>
+      <ul class="muted small" style="padding-left:18px;margin:0">
+        <li>Block several courts at once</li><li>Custom pricing for 10+ players</li><li>Help with fixtures &amp; scoring</li>
+      </ul></div>
+  </aside>
+</div>
+{% endblock %}

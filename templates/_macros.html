@@ -1,0 +1,61 @@
+{# Reusable pieces of HTML (Jinja macros) - like functions for templates #}
+
+{% macro venue_card(v) -%}
+<a class="venue-card" href="{{ url_for('venue_page', venue_id=v.id) }}">
+  <div class="art art-{{ v.main_sport() }}">
+    {% if v.featured %}<span class="tag">TOP PICK</span>{% endif %}
+    <span class="rate">★ {{ '%.1f'|format(v.rating) }} <small>({{ v.rating_count }})</small></span>
+    {{ SPORTS[v.main_sport()][1] }}
+  </div>
+  <div class="body">
+    <h3>{{ v.name }}</h3>
+    <div class="meta">📍 {{ v.area }} · {{ v.distance_km }} km away</div>
+    <div class="foot">
+      <span class="price">from <b>{{ v.min_price|inr }}</b>/hr</span>
+      <span class="sport-icons" title="{{ v.sport_list()|map(attribute=1)|join(', ') }}">
+        {% for key, name, icon in v.sport_list() %}{{ icon }}{% endfor %}
+      </span>
+    </div>
+  </div>
+</a>
+{%- endmacro %}
+
+
+{% macro game_card(g, venue, user=None) -%}
+{% set pct = (100 * (g.players|length) / g.total_spots)|round|int %}
+<div class="game-card {{ 'full' if g.is_full() }}">
+  <div class="head">
+    <div class="ic">{{ SPORTS[g.sport][1] }}</div>
+    <div>
+      <h3><a href="{{ url_for('game_page', game_id=g.id) }}">{{ SPORTS[g.sport][0] }} · {{ g.skill }}</a></h3>
+      <div class="small muted">{{ venue.name }} · {{ venue.area }}</div>
+    </div>
+  </div>
+  <div class="chips">
+    <span class="chip">📅 {{ g.date|pdate }}</span>
+    <span class="chip">⏰ {{ g.hour|hour }}</span>
+    <span class="chip teal">{{ g.cost_per_head|inr }} / player</span>
+  </div>
+  <div>
+    <div class="small" style="display:flex;justify-content:space-between;margin-bottom:5px">
+      <span><b>{{ g.players|length }}</b> of {{ g.total_spots }} joined</span>
+      <span class="{{ 'muted' if g.is_full() else '' }}" style="color:{{ '' if g.is_full() else 'var(--coral-dark)' }};font-weight:700">
+        {{ 'Full' if g.is_full() else (g.spots_left ~ ' spot' ~ ('s' if g.spots_left > 1 else '') ~ ' left') }}
+      </span>
+    </div>
+    <div class="bar"><i style="width: {{ pct }}%"></i></div>
+  </div>
+  <div class="foot">
+    <a class="small muted" href="{{ url_for('game_page', game_id=g.id) }}">View details →</a>
+    {% if user and g.has_player(user.email) %}
+      <span class="chip teal">✓ Joined</span>
+    {% elif g.is_full() %}
+      <span class="chip">Full</span>
+    {% else %}
+      <form action="{{ url_for('api_join', game_id=g.id) }}" method="POST">
+        <button class="btn btn-primary btn-sm" type="submit">Join game</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{%- endmacro %}

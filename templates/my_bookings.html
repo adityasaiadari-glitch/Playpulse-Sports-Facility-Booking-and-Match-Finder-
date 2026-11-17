@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My bookings · PlayPulse{% endblock %}
+
+{% macro booking_row(b, show_cancel) %}
+  {% set v = venue_map[b.venue_id] %}
+  <div class="bk {{ b.status }}">
+    <div class="datebox"><b>{{ b.date[8:10] }}</b><small>{{ slots.parse_date(b.date).strftime('%b %a') }}</small></div>
+    <div>
+      <h4><a href="{{ url_for('booking_page', booking_id=b.id) }}">{{ SPORTS[b.sport][1] }} {{ SPORTS[b.sport][0] }} · {{ v.name }}</a></h4>
+      <div class="small muted">{{ slots.range_label(b.hour, b.duration) }} · {{ b.amount|inr }} · {{ b.id }}
+        {% if b.game_id %} · <a href="{{ url_for('game_page', game_id=b.game_id) }}" style="color:var(--teal);font-weight:600">hosted game</a>{% endif %}
+        {% if b.status == 'cancelled' %} · <b style="color:var(--bad)">Cancelled</b>{% endif %}
+      </div>
+      {% if show_cancel and interest.get(b.id) %}
+        <div class="demand">🔥 {{ interest[b.id] }} other booking{{ 's' if interest[b.id] > 1 }} at this venue that day. Courts are in demand!</div>
+      {% endif %}
+    </div>
+    <div>
+      {% if show_cancel and b.cancellable() %}
+        <form action="{{ url_for('api_cancel', booking_id=b.id) }}" method="POST">
+          <button class="btn btn-ghost btn-sm" type="submit">Cancel</button>
+        </form>
+      {% elif show_cancel %}
+        <span class="small muted">Starts soon</span>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% block content %}
+<div class="container page-head" style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap">
+  <div><h1>Hi {{ user.first_name }} 👋</h1><p class="muted mt-0">{{ user.skill }} player · favourite sport: {{ SPORTS[user.favourite_sport][1] }} {{ SPORTS[user.favourite_sport][0] }}</p></div>
+  <a class="btn btn-ghost btn-sm" href="{{ url_for('my_bookings_csv') }}">⬇ Download bookings (CSV)</a>
+</div>
+
+<div class="container detail-layout" style="padding-top:10px">
+  <div>
+    <h2 style="font-size:1.3rem">Upcoming ({{ upcoming|length }})</h2>
+    {% for b in upcoming %}{{ booking_row(b, True) }}{% else %}
+      <div class="panel empty"><div class="big">🗓️</div><p>No upcoming bookings.</p><a class="btn btn-primary" href="{{ url_for('venues_page') }}">Book a venue</a></div>
+    {% endfor %}
+
+    <h2 style="font-size:1.3rem;margin-top:30px">Past &amp; cancelled ({{ past|length }})</h2>
+    {% for b in past[:15] %}{{ booking_row(b, False) }}{% else %}<p class="muted">Nothing here yet.</p>{% endfor %}
+  </div>
+
+  <aside class="side-sticky">
+    <div class="panel">
+      <h3>My games</h3>
+      {% for g in games %}
+        <a class="live-item" style="background:var(--sand)" href="{{ url_for('game_page', game_id=g.id) }}">
+          <div class="ic" style="background:#fff">{{ SPORTS[g.sport][1] }}</div>
+          <div><b style="color:var(--ink)">{{ SPORTS[g.sport][0] }} · {{ g.skill }}</b>
+            <span class="muted">{{ g.date|pdate }}, {{ g.hour|hour }}</span></div>
+        </a>
+      {% else %}
+        <p class="small muted">You haven't joined any games yet.</p>
+      {% endfor %}
+      <a class="btn btn-ghost btn-block btn-sm" href="{{ url_for('games_page') }}">Browse games</a>
+    </div>
+    <div class="policy">Free cancellation closes {{ slots.CANCEL_HOURS_BEFORE }} hours before your slot. Cancelling a hosted game's booking also cancels the game.</div>
+  </aside>
+</div>
+{% endblock %}

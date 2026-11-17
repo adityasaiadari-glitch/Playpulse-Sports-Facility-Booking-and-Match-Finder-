@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Sign up · PlayPulse{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-art">
+    <span class="eyebrow">Join PlayPulse</span>
+    <h2>Find courts. Find players. Play more.</h2>
+    <p>Tell us your level and favourite sport and we'll recommend games that suit you.</p>
+  </div>
+
+  <div class="auth-form">
+    <h1>Create account</h1>
+    <p class="muted">Already registered? <a href="{{ url_for('login_page') }}" style="color:var(--coral);font-weight:600">Log in</a></p>
+
+    <!--
+      The pattern="" attributes use the SAME regular expressions as backend/validators.py.
+      The browser checks them first; the server checks them again (users can bypass the browser).
+    -->
+    <form action="{{ url_for('api_signup') }}" method="POST">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" placeholder="Asha Verma" required
+               pattern="{{ patterns.name }}" title="2-40 letters and spaces" autocomplete="name">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@mail.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input type="tel" id="phone" name="phone" placeholder="9876543210" required maxlength="10"
+                 pattern="{{ patterns.phone }}" title="10 digits starting with 6, 7, 8 or 9" autocomplete="tel">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="skill">Skill level</label>
+          <select id="skill" name="skill" required>{% for s in SKILLS %}<option {{ 'selected' if loop.index == 2 }}>{{ s }}</option>{% endfor %}</select>
+        </div>
+        <div class="field">
+          <label for="favourite_sport">Favourite sport</label>
+          <select id="favourite_sport" name="favourite_sport" required>
+            {% for key, (name, icon) in SPORTS.items() %}<option value="{{ key }}">{{ icon }} {{ name }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="8" maxlength="20"
+                 pattern="{{ patterns.password }}" autocomplete="new-password"
+                 title="8-20 characters with an uppercase letter, a lowercase letter, a digit and a special character (@#$%^&+=!_*-)">
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm" required minlength="8" maxlength="20" autocomplete="new-password">
+        </div>
+      </div>
+      <ul class="rules">
+        <li>8–20 characters</li><li>One uppercase letter</li>
+        <li>One lowercase letter</li><li>One digit</li>
+        <li>One special: @ # $ % ^ &amp; + = ! _ * -</li><li>No spaces</li>
+      </ul>
+      <button class="btn btn-primary btn-block" style="margin-top:18px" type="submit">Create account</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

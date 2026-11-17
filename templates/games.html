@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "_macros.html" import game_card with context %}
+{% block title %}Find a game · PlayPulse{% endblock %}
+{% block content %}
+<div class="container page-head" style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap">
+  <div>
+    <h1>Find a game</h1>
+    <p class="muted mt-0">Join open matches near you, or host your own and let players come to you.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('host_game_page') }}">＋ Host a game</a>
+</div>
+
+{% if recommended %}
+<section class="container" style="margin-bottom:26px">
+  <h2 style="font-size:1.2rem">⭐ Recommended for you <span class="muted small">({{ user.skill }} · {{ SPORTS[user.favourite_sport][0] }})</span></h2>
+  <div class="grid-3">{% for g in recommended %}{{ game_card(g, venue_map[g.venue_id], user) }}{% endfor %}</div>
+</section>
+{% endif %}
+
+<div class="container layout-side">
+  <aside class="panel filters">
+    <form action="{{ url_for('games_page') }}" method="GET">
+      <div class="field">
+        <label for="sport">Sport</label>
+        <select id="sport" name="sport">
+          <option value="">Any sport</option>
+          {% for key, (name, icon) in SPORTS.items() %}<option value="{{ key }}" {{ 'selected' if sport == key }}>{{ icon }} {{ name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="skill">Skill level</label>
+        <select id="skill" name="skill">
+          <option value="">Any level</option>
+          {% for s in SKILLS %}<option {{ 'selected' if skill == s }}>{{ s }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="date">Day</label>
+        <select id="date" name="date">
+          <option value="">Any day</option>
+          {% for iso, label in days %}<option value="{{ iso }}" {{ 'selected' if date == iso }}>{{ label }} · {{ iso|pdate }}</option>{% endfor %}
+        </select>
+      </div>
+      <button class="btn btn-dark btn-block" type="submit">Filter games</button>
+      {% if sport or skill or date %}<a class="btn btn-ghost btn-block btn-sm" style="margin-top:8px" href="{{ url_for('games_page') }}">Clear</a>{% endif %}
+    </form>
+  </aside>
+
+  <section>
+    <p class="muted small" style="margin-top:0">{{ games|length }} upcoming game{{ 's' if games|length != 1 }}</p>
+    {% if games %}
+      <div class="grid-2">{% for g in games %}{{ game_card(g, venue_map[g.venue_id], user) }}{% endfor %}</div>
+    {% else %}
+      <div class="panel empty"><div class="big">🤝</div><h3>No games match</h3><p>Be the first: host a game and players will join you.</p>
+        <a class="btn btn-primary" href="{{ url_for('host_game_page') }}">Host a game</a></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

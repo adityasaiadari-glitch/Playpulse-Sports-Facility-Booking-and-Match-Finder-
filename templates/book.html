@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Book {{ venue.name }} · PlayPulse{% endblock %}
+{% block content %}
+<div class="container page-head">
+  <a class="small muted" href="{{ url_for('venue_page', venue_id=venue.id) }}">← Back to {{ venue.name }}</a>
+  <h1 style="margin-top:8px">Book a slot</h1>
+</div>
+
+<div class="container detail-layout" style="padding-top:6px">
+  <div class="steps">
+
+    <!-- Step 1 & 2 are plain links (GET ?sport=..&date=..), so no JavaScript is needed -->
+    <div class="panel">
+      <div class="step-title"><span class="num">1</span><h3>Choose a sport</h3></div>
+      <div class="pill-row">
+        {% for key, name, icon in venue.sport_list() %}
+          <a class="pill {{ 'on' if key == sport }}" href="{{ url_for('book_page', venue_id=venue.id, sport=key, date=day.isoformat()) }}">{{ icon }} {{ name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="step-title"><span class="num">2</span><h3>Choose a date</h3></div>
+      <div class="pill-row">
+        {% for iso, label in days %}
+          <a class="pill date-pill {{ 'on' if iso == day.isoformat() }}" href="{{ url_for('book_page', venue_id=venue.id, sport=sport, date=iso) }}">
+            {{ label }}<small>{{ iso|pdate }}</small>
+          </a>
+        {% endfor %}
+      </div>
+      <form action="{{ url_for('book_page', venue_id=venue.id) }}" method="GET" style="display:flex;gap:8px;margin-top:12px;max-width:360px">
+        <input type="hidden" name="sport" value="{{ sport }}">
+        <input type="date" name="date" value="{{ day.isoformat() }}" min="{{ today_iso }}" max="{{ max_iso }}" required>
+        <button class="btn btn-ghost btn-sm" type="submit">Go</button>
+      </form>
+    </div>
+
+    <!-- Step 3: the actual booking form - POSTs to the API -->
+    <form class="panel" action="{{ url_for('api_bookings') }}" method="POST">
+      <div class="step-title"><span class="num">3</span><h3>Pick a time · {{ slots.pretty_date(day) }}</h3></div>
+      <input type="hidden" name="venue_id" value="{{ venue.id }}">
+      <input type="hidden" name="sport" value="{{ sport }}">
+      <input type="hidden" name="date" value="{{ day.isoformat() }}">
+
+      <div class="slot-grid">
+        {% for s in grid %}
+          <div class="slot {{ s.status }}">
+            <input type="radio" name="hour" id="h{{ s.hour }}" value="{{ s.hour }}" required
+                   {{ 'disabled' if s.status in ('full', 'past') }}>
+            <label for="h{{ s.hour }}">
+              <b>{{ s.label }}</b>
+              <span>
+                {% if s.status == 'past' %}Passed
+                {% elif s.status == 'full' %}Booked
+                {% elif s.status == 'last' %}1 court left
+                {% else %}{{ s.courts_left }} free{% endif %}
+              </span>
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="legend">
+        <span><i style="background:#fff;border:1.5px solid var(--line)"></i>Available</span>
+        <span><i style="background:var(--teal)"></i>Selected</span>
+        <span><i style="background:#f3f1ed"></i>Booked / passed</span>
+      </div>
+
+      <div class="row-2" style="margin-top:20px;align-items:end">
+        <div class="field" style="margin:0">
+          <label for="duration">Duration</label>
+          <select id="duration" name="duration">
+            <option value="1">1 hour · {{ price|inr }}</option>
+            <option value="2">2 hours · {{ (price * 2)|inr }}</option>
+            <option value="3">3 hours · {{ (price * 3)|inr }}</option>
+          </select>
+        </div>
+        {% if user %}
+          <button class="btn btn-primary btn-block" type="submit" {{ 'disabled' if not any_open }}>Confirm booking</button>
+        {% else %}
+          <a class="btn btn-primary btn-block" href="{{ url_for('login_page', next=request.full_path) }}">Log in to book</a>
+        {% endif %}
+      </div>
+      {% if not any_open %}<p class="small muted" style="margin-top:10px">No free slots on this date. Try another day.</p>{% endif %}
+    </form>
+  </div>
+
+  <!-- Summary -->
+  <aside class="side-sticky">
+    <div class="panel summary-card">
+      <h3>{{ venue.name }}</h3>
+      <p class="small muted">{{ venue.address }}</p>
+      <div class="line"><span>Sport</span><b>{{ SPORTS[sport][1] }} {{ SPORTS[sport][0] }}</b></div>
+      <div class="line"><span>Date</span><b>{{ slots.pretty_date(day) }}</b></div>
+      <div class="line"><span>Rate</span><b>{{ price|inr }}/hr {{ '(weekend)' if slots.is_weekend(day) else '(weekday)' }}</b></div>
+      <div class="line"><span>Courts</span><b>{{ venue.sports[sport].courts }}</b></div>
+      <div class="policy" style="margin-top:14px">
+        ✅ Free cancellation up to {{ slots.CANCEL_HOURS_BEFORE }} hours before start<br>
+        📅 Bookings open {{ slots.MAX_DAYS_AHEAD }} days ahead<br>
+        👟 Non-marking shoes required on indoor courts
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Need more players?</h3>
+      <p class="small muted">Host this slot as an open game and others can join and split the cost.</p>
+      <a class="btn btn-ghost btn-block" href="{{ url_for('host_game_page', venue_id=venue.id, sport=sport, date=day.isoformat()) }}">Host a game here</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

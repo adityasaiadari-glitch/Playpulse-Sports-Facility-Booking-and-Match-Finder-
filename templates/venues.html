@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import venue_card with context %}
+{% block title %}Venues · PlayPulse{% endblock %}
+{% block content %}
+<div class="container page-head">
+  <h1>{{ SPORTS[sport][0] ~ ' venues' if sport else 'All venues' }}</h1>
+  <p class="muted">{{ venues|length }} venue{{ 's' if venues|length != 1 }} found · distances from {{ area }}{% if q %} · matching “{{ q }}”{% endif %}</p>
+</div>
+
+<div class="container layout-side">
+  <!-- Filters: a GET form, so the filters appear in the URL and can be shared -->
+  <aside class="panel filters">
+    <h3>Sport</h3>
+    <div class="filter-sports">
+      <a href="{{ url_for('venues_page', q=q, sort=sort) }}" class="{{ 'on' if not sport }}">Any sport</a>
+      {% for key, (name, icon) in SPORTS.items() %}
+        <a href="{{ url_for('venues_page', sport=key, q=q, sort=sort) }}" class="{{ 'on' if sport == key }}"><span>{{ icon }} {{ name }}</span></a>
+      {% endfor %}
+    </div>
+    <form action="{{ url_for('venues_page') }}" method="GET">
+      {% if sport %}<input type="hidden" name="sport" value="{{ sport }}">{% endif %}
+      <div class="field">
+        <label for="q">Search</label>
+        <input type="text" id="q" name="q" value="{{ q }}" placeholder="Name or area">
+      </div>
+      <div class="field">
+        <label for="sort">Sort by</label>
+        <select id="sort" name="sort">
+          {% for val, label in [('recommended', 'Recommended'), ('distance', 'Nearest first'), ('rating', 'Top rated'), ('price', 'Lowest price')] %}
+            <option value="{{ val }}" {{ 'selected' if sort == val }}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn btn-dark btn-block" type="submit">Apply</button>
+    </form>
+  </aside>
+
+  <section>
+    {% if venues %}
+      <div class="grid-3">{% for v in venues %}{{ venue_card(v) }}{% endfor %}</div>
+    {% else %}
+      <div class="panel empty"><div class="big">🔍</div><h3>No venues match</h3><p>Try another sport or clear the search.</p>
+        <a class="btn btn-ghost" href="{{ url_for('venues_page') }}">Clear filters</a></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

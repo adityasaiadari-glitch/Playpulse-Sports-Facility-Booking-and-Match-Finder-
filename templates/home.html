@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% from "_macros.html" import venue_card, game_card with context %}
+{% block content %}
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="container">
+    <div>
+      <span class="eyebrow">● Sports facility booking &amp; match finder</span>
+      <h1>Your city is a <em>playground.</em><br>Book it in 30 seconds.</h1>
+      <p class="lead">Reserve badminton courts, football turfs and swimming lanes near {{ area }}, or join an open game with players at your level. No calls, no waiting.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+        <a href="{{ url_for('venues_page') }}" class="btn btn-primary">Book a venue</a>
+        <a href="{{ url_for('games_page') }}" class="btn btn-light">Find a game</a>
+      </div>
+    </div>
+
+    <!-- live board: real open games from games.json -->
+    <div class="live-board">
+      <h3><span class="live-dot"></span> {{ 'Picked for you' if user else 'Games looking for players' }}</h3>
+      {% for g in games %}
+        {% set v = venue_map[g.venue_id] %}
+        <a class="live-item" href="{{ url_for('game_page', game_id=g.id) }}">
+          <div class="ic">{{ SPORTS[g.sport][1] }}</div>
+          <div><b>{{ SPORTS[g.sport][0] }} · {{ g.skill }}</b><span>{{ v.name }} · {{ g.date|pdate }}, {{ g.hour|hour }}</span></div>
+          <div class="spots">{{ g.spots_left }} left</div>
+        </a>
+      {% else %}
+        <p class="muted small">No open games right now. <a href="{{ url_for('host_game_page') }}" style="color:var(--coral)">Host one →</a></p>
+      {% endfor %}
+      <a href="{{ url_for('games_page') }}" class="small" style="color:#cdd5e6">See all open games →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Search card (GET form -> /venues?sport=..&q=..&sort=..) ===== -->
+<div class="container">
+  <form class="search-card" action="{{ url_for('venues_page') }}" method="GET">
+    <div>
+      <label for="q">Venue or area</label>
+      <input type="text" id="q" name="q" placeholder="e.g. Saket, Smash, Turf…">
+    </div>
+    <div>
+      <label for="sport">Sport</label>
+      <select id="sport" name="sport">
+        <option value="">Any sport</option>
+        {% for key, (name, icon) in SPORTS.items() %}<option value="{{ key }}">{{ icon }} {{ name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="sort">Sort by</label>
+      <select id="sort" name="sort">
+        <option value="recommended">Recommended</option>
+        <option value="distance">Nearest first</option>
+        <option value="rating">Top rated</option>
+        <option value="price">Lowest price</option>
+      </select>
+    </div>
+    <button class="btn btn-dark" type="submit">Search venues</button>
+  </form>
+</div>
+
+<!-- ===== Sports ===== -->
+<section class="section container">
+  <div class="section-head"><h2>Pick your sport</h2></div>
+  <div class="sport-tiles">
+    {% for key, (name, icon) in SPORTS.items() %}
+      <a class="sport-tile" href="{{ url_for('venues_page', sport=key) }}">
+        <span class="emoji">{{ icon }}</span><b>{{ name }}</b>
+        <span>{{ counts[key] }} venue{{ 's' if counts[key] != 1 }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===== Top picks ===== -->
+<section class="section container">
+  <div class="section-head">
+    <div><h2>Top picks this week</h2><p class="muted mt-0" style="margin:4px 0 0">Highest rated venues, distances from {{ area }}</p></div>
+    <a class="more" href="{{ url_for('venues_page') }}">All venues →</a>
+  </div>
+  <div class="grid-4">{% for v in venues %}{{ venue_card(v) }}{% endfor %}</div>
+</section>
+
+<!-- ===== Nearby ===== -->
+<section class="section container">
+  <div class="section-head">
+    <h2>Closest to {{ area }}</h2>
+    <a class="more" href="{{ url_for('venues_page', sort='distance') }}">Sort by distance →</a>
+  </div>
+  <div class="grid-4">{% for v in nearby %}{{ venue_card(v) }}{% endfor %}</div>
+</section>
+
+<!-- ===== How it works ===== -->
+<section class="section container">
+  <div class="section-head"><h2>How PlayPulse works</h2></div>
+  <div class="how">
+    <div class="step"><div class="n">01</div><h3>Find a venue</h3><p class="muted">Filter by sport, distance, rating or price. Every venue shows real-time free slots.</p></div>
+    <div class="step"><div class="n">02</div><h3>Book a slot</h3><p class="muted">Pick a date and time, confirm, and get an instant booking ticket. Free cancellation up to 2 hours before.</p></div>
+    <div class="step"><div class="n">03</div><h3>Fill your team</h3><p class="muted">Host your slot as an open game and players at your skill level can join in one tap.</p></div>
+  </div>
+
+  <div class="stats-band">
+    <div><b>{{ stats.venues }}</b><span>venues</span></div>
+    <div><b>{{ stats.sports }}</b><span>sports</span></div>
+    <div><b>{{ stats.bookings }}</b><span>bookings made</span></div>
+    <div><b>{{ stats.open_games }}</b><span>games open now</span></div>
+  </div>
+</section>
+
+{% endblock %}

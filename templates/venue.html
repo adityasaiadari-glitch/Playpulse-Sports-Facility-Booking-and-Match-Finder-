@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% from "_macros.html" import game_card with context %}
+{% block title %}{{ venue.name }} · PlayPulse{% endblock %}
+{% block content %}
+
+<!-- ===== Coloured header ===== -->
+<section class="venue-hero art-{{ venue.main_sport() }}">
+  <div class="container">
+    <div class="crumbs"><a href="{{ url_for('venues_page') }}">Venues</a> › <a href="{{ url_for('venues_page', q=venue.area) }}">{{ venue.area }}</a> › {{ venue.name }}</div>
+    <h1>{{ venue.name }}</h1>
+    <div class="hero-meta">
+      <span class="chip">★ {{ '%.2f'|format(venue.rating) }} · {{ venue.rating_count }} rating{{ 's' if venue.rating_count != 1 }}</span>
+      <a class="chip" href="#rate">✍️ Rate this venue</a>
+      <span class="chip">📍 {{ venue.area }}</span>
+      {% if venue.featured %}<span class="chip">🏅 Top pick</span>{% endif %}
+    </div>
+  </div>
+  <div class="big-emoji">{{ SPORTS[venue.main_sport()][1] }}</div>
+</section>
+
+<!-- ===== Quick facts + main actions in one bar ===== -->
+<div class="container">
+  <div class="action-bar">
+    <div class="fact"><small>Open</small><b>{{ venue.timing() }}</b></div>
+    <div class="fact"><small>Distance</small><b>{{ venue.distance_km }} km from {{ area }}</b></div>
+    <div class="fact"><small>Starts at</small><b>{{ venue.min_price|inr }}/hr</b></div>
+    <div class="fact"><small>Sports</small><b>{{ venue.sports|length }} available</b></div>
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ url_for('book_page', venue_id=venue.id) }}">Book a slot</a>
+      <a class="btn btn-ghost" target="_blank" rel="noopener"
+         href="https://wa.me/?text={{ ('Let us play at ' ~ venue.name ~ ': ' ~ url_for('venue_page', venue_id=venue.id, _external=True))|urlencode }}"
+         title="Share on WhatsApp">↗ Share</a>
+    </div>
+  </div>
+</div>
+
+<div class="container detail-layout">
+  <!-- ===== Main column ===== -->
+  <div>
+    <div class="panel">
+      <h3>About the venue</h3>
+      <p>{{ venue.about }}</p>
+      <p class="small muted mt-0">Surface: {{ venue.surface }}</p>
+    </div>
+
+    <div class="panel">
+      <h3>Sports &amp; prices</h3>
+      <p class="small muted">Tap a sport to open its price chart.</p>
+      {% for key, name, icon in venue.sport_list() %}
+        {% set info = venue.sports[key] %}
+        <!-- <details> opens and closes without any JavaScript -->
+        <details class="price-chart" {{ 'open' if loop.first }}>
+          <summary><span class="ic">{{ icon }}</span>{{ name }}<span class="from">{{ info.courts }} court{{ 's' if info.courts > 1 }} · from {{ info.weekday|inr }}/hr</span></summary>
+          <table class="tbl">
+            <tr><th>Day</th><th>Price per hour</th><th>Courts</th><th></th></tr>
+            <tr><td>Mon – Fri</td><td><b>{{ info.weekday|inr }}</b></td><td>{{ info.courts }}</td>
+                <td rowspan="2"><a class="btn btn-teal btn-sm" href="{{ url_for('book_page', venue_id=venue.id, sport=key) }}">Book {{ name }}</a></td></tr>
+            <tr><td>Sat – Sun</td><td><b>{{ info.weekend|inr }}</b></td><td>{{ info.courts }}</td></tr>
+          </table>
+        </details>
+      {% endfor %}
+    </div>
+
+    {% if games %}
+    <div class="panel">
+      <h3>Open games at this venue</h3>
+      <div class="grid-2" style="margin-top:12px">
+        {% for g in games %}{{ game_card(g, venue, user) }}{% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="panel" id="reviews">
+      <h3>Reviews <span class="muted small">({{ venue.rating_count }})</span></h3>
+      {% for r in venue.reviews|reverse %}
+        <div class="review">
+          <div class="who">{{ r.name.split()|map('first')|join('')|upper }}</div>
+          <div>
+            <b>{{ r.name }}</b> <span class="stars">{{ '★' * r.stars }}{{ '☆' * (5 - r.stars) }}</span>
+            <div class="small muted">{{ r.date|pdate }}</div>
+            {% if r.text %}<p class="mt-0" style="margin-top:4px">{{ r.text }}</p>{% endif %}
+          </div>
+        </div>
+      {% else %}
+        <p class="muted">No reviews yet. Be the first!</p>
+      {% endfor %}
+
+      <!-- Rate form posts to the API: POST /api/venues/<id>/reviews -->
+      <div id="rate" style="border-top:1px solid var(--line);margin-top:10px;padding-top:16px">
+        <h4>{{ 'Update your rating' if my_review else 'Rate this venue' }}</h4>
+        {% if user %}
+        <form action="{{ url_for('api_review', venue_id=venue.id) }}" method="POST">
+          <div class="star-input">
+            {% for s in range(5, 0, -1) %}
+              <input type="radio" id="s{{ s }}" name="stars" value="{{ s }}" required {{ 'checked' if my_review and my_review.stars == s }}>
+              <label for="s{{ s }}" title="{{ s }} star{{ 's' if s > 1 }}">★</label>
+            {% endfor %}
+          </div>
+          <div class="field">
+            <textarea name="text" rows="3" maxlength="300" placeholder="How were the courts, lights, staff? (optional)">{{ my_review.text if my_review }}</textarea>
+          </div>
+          <button class="btn btn-dark btn-sm" type="submit">Submit rating</button>
+        </form>
+        {% else %}
+          <p class="muted small"><a href="{{ url_for('login_page', next=request.path ~ '#rate') }}" style="color:var(--coral);font-weight:600">Log in</a> to rate this venue.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Side column ===== -->
+  <aside class="side-sticky">
+    <div class="panel">
+      <h3>Location</h3>
+      <p class="small">{{ venue.address }}</p>
+      <iframe class="map-frame" loading="lazy" title="Map of {{ venue.name }}"
+              src="https://maps.google.com/maps?q={{ venue.lat }},{{ venue.lng }}&z=15&output=embed"></iframe>
+      <a class="small" style="color:var(--coral);font-weight:600;display:inline-block;margin-top:8px" target="_blank" rel="noopener"
+         href="https://www.google.com/maps/search/?api=1&query={{ venue.lat }},{{ venue.lng }}">Open in Google Maps ↗</a>
+    </div>
+    <div class="panel">
+      <h3>Amenities</h3>
+      <div class="chips">{% for a in venue.amenities %}<span class="chip">✓ {{ a }}</span>{% endfor %}</div>
+    </div>
+    <div class="panel">
+      <h3>Playing with a big group?</h3>
+      <p class="small muted">Corporate events, college fests and tournaments get special rates.</p>
+      <a class="btn btn-ghost btn-block" href="{{ url_for('corporate_page', venue_id=venue.id) }}">Group / corporate enquiry</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

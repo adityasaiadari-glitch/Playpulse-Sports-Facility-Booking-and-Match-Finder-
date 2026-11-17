@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Not found · PlayPulse{% endblock %}
+{% block content %}
+<div class="container" style="padding:80px 0;text-align:center">
+  <div style="font-size:5rem">🏸💨</div>
+  <h1 style="font-size:2.4rem">Out of bounds!</h1>
+  <p class="muted">{{ message }}</p>
+  <a class="btn btn-primary" href="{{ url_for('home') }}">Back to home</a>
+  <a class="btn btn-ghost" href="{{ url_for('venues_page') }}">Browse venues</a>
+</div>
+{% endblock %}

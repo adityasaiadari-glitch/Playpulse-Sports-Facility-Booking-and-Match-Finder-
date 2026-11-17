@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Log in · PlayPulse{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-art">
+    <span class="eyebrow">Welcome back</span>
+    <h2>Your next game is one tap away.</h2>
+    <p>Log in to book courts, join open games and manage your bookings.</p>
+  </div>
+
+  <div class="auth-form">
+    <h1>Log in</h1>
+    <p class="muted">New here? <a href="{{ url_for('signup_page') }}" style="color:var(--coral);font-weight:600">Create an account</a></p>
+
+    <div class="demo-box">🔑 Demo account: <b>demo@playpulse.in</b> / <b>Demo@1234</b></div>
+
+    <!-- POST /api/auth/login  (passwords are always sent with POST, never GET) -->
+    <form action="{{ url_for('api_login') }}" method="POST">
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@mail.com" required autofocus autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Your password" required autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Log in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

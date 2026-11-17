@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}API · PlayPulse{% endblock %}
+{% block content %}
+<div class="container page-head">
+  <h1>PlayPulse API</h1>
+  <p class="muted mt-0">Every page on this site talks to the same JSON API. You can call it yourself from a browser, Postman or <code>curl</code>.</p>
+</div>
+
+<div class="container">
+  <div class="panel">
+    <h3>Endpoints</h3>
+    <table class="tbl">
+      <tr><th>Method</th><th>URL</th><th>What it does</th><th>Login</th></tr>
+      {% set rows = [
+        ('GET', '/api/venues?sport=badminton&sort=rating', 'List / filter / sort venues', 'No'),
+        ('GET', '/api/venues/1', 'One venue with rating, prices, distance', 'No'),
+        ('GET', '/api/venues/1/slots?sport=badminton&date=' ~ today_iso, 'Free and booked slots for a day', 'No'),
+        ('POST', '/api/venues/1/reviews', 'Rate a venue {stars, text}', 'Yes'),
+        ('POST', '/api/auth/signup', 'Create account', 'No'),
+        ('POST', '/api/auth/login', 'Log in {email, password}', 'No'),
+        ('POST', '/api/auth/logout', 'Log out', 'Yes'),
+        ('GET', '/api/auth/me', 'Who am I?', 'Yes'),
+        ('GET', '/api/bookings', 'My upcoming and past bookings', 'Yes'),
+        ('POST', '/api/bookings', 'Book {venue_id, sport, date, hour, duration}', 'Yes'),
+        ('DELETE', '/api/bookings/PP00001', 'Cancel a booking (or POST …/cancel)', 'Yes'),
+        ('GET', '/api/games?sport=football', 'Open games (match finder)', 'No'),
+        ('POST', '/api/games', 'Host a game (books the court too)', 'Yes'),
+        ('POST', '/api/games/G0001/join', 'Join a game', 'Yes'),
+        ('POST', '/api/games/G0001/leave', 'Leave a game', 'Yes'),
+        ('POST', '/api/enquiries', 'Group / corporate enquiry (saved to CSV)', 'No'),
+      ] %}
+      {% for m, url, what, auth in rows %}
+        <tr>
+          <td><span class="method m-{{ m|lower }}">{{ m }}</span></td>
+          <td><code>{% if m == 'GET' and auth == 'No' %}<a href="{{ url }}" style="color:var(--teal)">{{ url }}</a>{% else %}{{ url }}{% endif %}</code></td>
+          <td>{{ what }}</td><td>{{ auth }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="grid-2" style="margin-top:20px">
+    <div class="panel">
+      <h3>Try it with curl</h3>
+<pre class="code"># log in and keep the session cookie
+curl -c cookie.txt -H "Content-Type: application/json" \
+     -d '{"email":"demo@playpulse.in","password":"Demo@1234"}' \
+     http://127.0.0.1:5000/api/auth/login
+
+# book badminton tomorrow at 7 PM
+curl -b cookie.txt -H "Content-Type: application/json" \
+     -d '{"venue_id":1,"sport":"badminton","date":"YYYY-MM-DD","hour":19}' \
+     http://127.0.0.1:5000/api/bookings</pre>
+    </div>
+    <div class="panel">
+      <h3>Responses &amp; errors</h3>
+      <p class="small">Success returns JSON with <code>200</code> (OK) or <code>201</code> (Created). Errors return <code>{"error": "...", "type": "..."}</code> with a matching status:</p>
+      <table class="tbl">
+        <tr><th>Status</th><th>Raised by</th></tr>
+        <tr><td>400</td><td>ValidationError: bad input</td></tr>
+        <tr><td>401</td><td>AuthError: not logged in / wrong password</td></tr>
+        <tr><td>403</td><td>PermissionDenied: not your booking</td></tr>
+        <tr><td>404</td><td>NotFoundError: unknown id</td></tr>
+        <tr><td>409</td><td>SlotUnavailableError / GameFullError / CancellationNotAllowedError</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

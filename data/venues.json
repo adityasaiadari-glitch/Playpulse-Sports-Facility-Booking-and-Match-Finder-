@@ -1,0 +1,158 @@
+[
+  {
+    "id": 1,
+    "name": "Skyline Smash Arena",
+    "area": "Dwarka",
+    "address": "Plot 14, Sector 10, Dwarka, New Delhi 110075",
+    "lat": 28.5823, "lng": 77.0500,
+    "opens": 6, "closes": 23,
+    "featured": true,
+    "surface": "Wooden courts with synthetic mats",
+    "about": "Six air-conditioned badminton courts with tournament-grade lighting, plus two outdoor pickleball courts. Popular for evening doubles.",
+    "amenities": ["Parking", "Changing rooms", "Drinking water", "Racket rental", "First aid", "Air conditioning"],
+    "sports": {
+      "badminton": {"courts": 6, "weekday": 450, "weekend": 550},
+      "pickleball": {"courts": 2, "weekday": 600, "weekend": 700}
+    },
+    "reviews": [
+      {"name": "Riya Sharma", "stars": 5, "text": "Best lighting in Dwarka, no shadows on the shuttle.", "date": "2026-10-28"},
+      {"name": "Arjun Mehta", "stars": 4, "text": "Great courts, parking gets full after 7 PM.", "date": "2026-11-02"},
+      {"name": "Neha Gupta", "stars": 5, "text": "Clean washrooms and friendly staff.", "date": "2026-11-09"}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Greenfield Turf Club",
+    "area": "Janakpuri",
+    "address": "Near District Centre, Janakpuri West, New Delhi 110058",
+    "lat": 28.6290, "lng": 77.0790,
+    "opens": 6, "closes": 24,
+    "featured": true,
+    "surface": "FIFA-grade artificial turf",
+    "about": "Floodlit 5-a-side and 7-a-side football turf that converts to two box-cricket pitches. Night games are a local favourite.",
+    "amenities": ["Floodlights", "Parking", "Changing rooms", "Drinking water", "Bibs provided", "Cafe"],
+    "sports": {
+      "football": {"courts": 2, "weekday": 1800, "weekend": 2400},
+      "cricket": {"courts": 2, "weekday": 1500, "weekend": 2000}
+    },
+    "reviews": [
+      {"name": "Arjun Mehta", "stars": 5, "text": "Turf is well maintained, ball rolls true.", "date": "2026-10-20"},
+      {"name": "Kabir Singh", "stars": 4, "text": "Fun for box cricket with friends.", "date": "2026-11-05"}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "The Rally House",
+    "area": "Saket",
+    "address": "Lane 3, Press Enclave Road, Saket, New Delhi 110017",
+    "lat": 28.5245, "lng": 77.2066,
+    "opens": 6, "closes": 22,
+    "featured": true,
+    "surface": "Hard courts (acrylic)",
+    "about": "Three hard tennis courts and four pickleball courts with a small pro shop. Coaching available on weekday mornings.",
+    "amenities": ["Coaching", "Pro shop", "Drinking water", "Seating area", "Ball machine"],
+    "sports": {
+      "tennis": {"courts": 3, "weekday": 700, "weekend": 900},
+      "pickleball": {"courts": 4, "weekday": 550, "weekend": 650}
+    },
+    "reviews": [
+      {"name": "Neha Gupta", "stars": 5, "text": "Courts are resurfaced and the ball machine is a gem.", "date": "2026-11-01"},
+      {"name": "Riya Sharma", "stars": 4, "text": "Pickleball here is addictive!", "date": "2026-11-10"}
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Hoopstreet Courts",
+    "area": "Rohini",
+    "address": "Sector 8 Market Road, Rohini, New Delhi 110085",
+    "lat": 28.7041, "lng": 77.1025,
+    "opens": 7, "closes": 23,
+    "featured": false,
+    "surface": "Outdoor acrylic, FIBA markings",
+    "about": "Two full-size outdoor basketball courts with glass backboards. Weekend 3v3 pickup games run every Saturday.",
+    "amenities": ["Floodlights", "Drinking water", "Seating area", "Ball rental"],
+    "sports": {
+      "basketball": {"courts": 2, "weekday": 800, "weekend": 1000}
+    },
+    "reviews": [
+      {"name": "Ishaan Rao", "stars": 5, "text": "Proper rims, proper crowd. Love it.", "date": "2026-10-30"},
+      {"name": "Arjun Mehta", "stars": 4, "text": "Good courts, gets humid in the evenings.", "date": "2026-11-08"}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Spin Republic",
+    "area": "Rajouri Garden",
+    "address": "J-Block Main Market, Rajouri Garden, New Delhi 110027",
+    "lat": 28.6415, "lng": 77.1209,
+    "opens": 8, "closes": 22,
+    "featured": false,
+    "surface": "Indoor, ITTF-approved tables",
+    "about": "Eight table-tennis tables and two badminton courts in a quiet indoor hall. Great for practice sessions.",
+    "amenities": ["Air conditioning", "Bat rental", "Drinking water", "Lockers"],
+    "sports": {
+      "table_tennis": {"courts": 8, "weekday": 250, "weekend": 300},
+      "badminton": {"courts": 2, "weekday": 400, "weekend": 500}
+    },
+    "reviews": [
+      {"name": "Kabir Singh", "stars": 4, "text": "Tables are excellent, AC could be stronger.", "date": "2026-11-03"}
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Boundary Box Cricket",
+    "area": "Vasant Kunj",
+    "address": "Rooftop, Ambience Lane, Vasant Kunj, New Delhi 110070",
+    "lat": 28.5293, "lng": 77.1550,
+    "opens": 15, "closes": 24,
+    "featured": true,
+    "surface": "Rooftop turf with full netting",
+    "about": "Rooftop box-cricket arena with bowling machine and live scoreboard. Opens 3 PM onwards, ideal for after-college games.",
+    "amenities": ["Bowling machine", "Scoreboard", "Floodlights", "Cafe", "Parking"],
+    "sports": {
+      "cricket": {"courts": 1, "weekday": 1400, "weekend": 1900}
+    },
+    "reviews": [
+      {"name": "Kabir Singh", "stars": 5, "text": "Rooftop vibe at night is unbeatable.", "date": "2026-11-06"},
+      {"name": "Arjun Mehta", "stars": 5, "text": "Bowling machine is great for practice.", "date": "2026-11-11"}
+    ]
+  },
+  {
+    "id": 7,
+    "name": "AquaLane Sports Centre",
+    "area": "Hauz Khas",
+    "address": "Aurobindo Marg, near Green Park Metro, New Delhi 110016",
+    "lat": 28.5494, "lng": 77.2001,
+    "opens": 6, "closes": 21,
+    "featured": false,
+    "surface": "Heated 25 m pool, indoor courts",
+    "about": "A 25-metre temperature-controlled pool with lane bookings, plus three indoor badminton courts.",
+    "amenities": ["Lifeguard", "Showers", "Lockers", "Changing rooms", "Parking"],
+    "sports": {
+      "swimming": {"courts": 5, "weekday": 300, "weekend": 350},
+      "badminton": {"courts": 3, "weekday": 500, "weekend": 600}
+    },
+    "reviews": [
+      {"name": "Neha Gupta", "stars": 4, "text": "Water is clean and the lanes are not crowded in the mornings.", "date": "2026-10-25"},
+      {"name": "Riya Sharma", "stars": 4, "text": "Nice place to cool down after badminton.", "date": "2026-11-07"}
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Kickoff Rooftop Turf",
+    "area": "Karol Bagh",
+    "address": "Pusa Road, Karol Bagh, New Delhi 110005",
+    "lat": 28.6448, "lng": 77.1903,
+    "opens": 16, "closes": 24,
+    "featured": false,
+    "surface": "Rooftop artificial grass",
+    "about": "Compact rooftop 5-a-side turf with a city-skyline view. Evening slots fill fast on weekends.",
+    "amenities": ["Floodlights", "Drinking water", "Bibs provided", "Changing rooms"],
+    "sports": {
+      "football": {"courts": 1, "weekday": 1600, "weekend": 2100}
+    },
+    "reviews": [
+      {"name": "Arjun Mehta", "stars": 4, "text": "Small but super fun, great for quick games.", "date": "2026-11-04"}
+    ]
+  }
+]
